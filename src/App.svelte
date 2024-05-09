@@ -1,31 +1,40 @@
 <script>
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
-  import Counter from './lib/Counter.svelte'
+  // @ts-nocheck
+  import Login from "./components/Login.svelte";
+  import { user } from "./util/auth";
+  import { Router, Link, Route } from "svelte-routing";
+  import Home from "./components/Home.svelte";
+  import { signIn } from "./util/auth";
+  import { onDestroy, onMount } from "svelte";
+  import NavBar from "./components/NavBar.svelte";
+  import Workouts from "./components/Workouts.svelte";
+  import WorkOutForm from "./components/forms/WorkOutForm.svelte";
+  import SessionForm from "./components/forms/SessionForm.svelte";
+  import Sessions from "./components/Sessions.svelte";
+
+  let authUser;
+  const unsubscribe = user.subscribe((value) => {
+    authUser = value;
+  });
+  onDestroy(() => {
+    unsubscribe();
+  });
 </script>
 
 <main>
-  <div>
-    <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-      <img src={viteLogo} class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
-  </div>
-  <h1>Vite + Svelte</h1>
-
-  <div class="card">
-    <Counter />
-  </div>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
+  {#if authUser}
+    <NavBar />
+    <Router>
+      <Route path="/"><Home /></Route>
+      <Route path="/workouts"><Workouts /></Route>
+      <Route path="/createNewWorkout/"><WorkOutForm /></Route>
+      <Route path="/workout/:fbKey"><WorkOutForm /></Route>
+      <Route path="/sessionForm/:fbKey"><SessionForm /></Route>
+      <Route path="/sessions"><Sessions /></Route>
+    </Router>
+  {:else}
+    <Login {signIn} />
+  {/if}
 </main>
 
 <style>
