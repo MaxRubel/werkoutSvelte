@@ -6,14 +6,15 @@
   import { onDestroy, onMount } from "svelte";
   import { getSingleSession, updateSession } from "../../api/sessions";
   import ExCard from "../ExCard.svelte";
+  import { navigate } from "svelte-routing";
 
   let authUser;
   const unsubscribe = user.subscribe((value) => {
     authUser = value;
   });
 
-  let workoutName = "";
-  let workoutDate = "";
+  let sessionName = "";
+  let sessionDate = "";
   let workoutType = "none";
   let excercises = [{ name: "", qt: "", id: uniqid(), completed: false }];
   const currentUrl = window.location.href;
@@ -22,10 +23,11 @@
 
   onMount(() => {
     getSingleSession(param).then((data) => {
-      workoutName = data.name;
+      const [date] = data.date.split(" ");
+      sessionDate = date;
+      sessionName = data.name;
       workoutType = data.category;
       excercises = JSON.parse(data.excercises);
-      console.log(data);
     });
   });
 
@@ -67,12 +69,14 @@
     const payload = {
       userId: authUser.uid,
       fbKey: param,
-      name: workoutName,
-      date: workoutDate,
+      name: sessionName,
+      date: sessionDate,
       category: workoutType,
       excercises: JSON.stringify(excercises),
     };
-    updateSession(payload);
+    updateSession(payload).then(() => {
+      navigate("/sessions");
+    });
   };
 
   const handleCompleted = (id) => {
@@ -87,14 +91,20 @@
   onDestroy(() => {
     unsubscribe();
   });
+
+  $: {
+    if (workoutType === "none") {
+      workoutType = "";
+    }
+  }
 </script>
 
 <main>
   <form on:submit={handleSubmit}>
+    <h3><i>{workoutType}</i></h3>
     <div class="top-info">
-      <h1>{workoutName}</h1>
-      <h3><i>{workoutType}</i></h3>
-      <input type="date" name="date" bind:value={workoutDate} />
+      <input type="text" name="name" bind:value={sessionName} />
+      <input type="date" name="date" bind:value={sessionDate} />
     </div>
     <div class="space">
       <button type="button" on:click={addExc}>Add +</button>

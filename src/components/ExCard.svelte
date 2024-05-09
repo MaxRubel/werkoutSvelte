@@ -90,7 +90,7 @@
     display: grid;
     grid-template-columns: 0.25fr 1fr 0.25;
     gap: 8px;
-    margin-bottom: 10px;
+    padding: 4px 0px;
   }
   .fin-btn {
     display: flex;
@@ -102,10 +102,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-
-  article {
-    margin-bottom: 0px;
   }
 
   label {
