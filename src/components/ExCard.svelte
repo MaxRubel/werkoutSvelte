@@ -1,13 +1,25 @@
 <script>
   export let handleChange;
   export let handleDelete;
+  export let handleCompleted;
   export let exc;
+  let isCompleted;
+  $: {
+    if (exc.completed) {
+      isCompleted = true;
+    } else {
+      isCompleted = false;
+    }
+  }
 </script>
 
 <main>
-  <article>
-    <header>
-      <div class="row">
+  <article style="background-color: {isCompleted ? 'lightgrey' : ''}">
+    <header style="background-color: {isCompleted ? 'lightgrey' : ''}">
+      <div
+        class="row"
+        style="background-color: {isCompleted ? 'lightgrey' : ''}"
+      >
         <div><b>Qt.</b></div>
         <div><b>Excercise</b></div>
       </div>
@@ -20,6 +32,7 @@
           name="qt"
           on:input={(e) => handleChange(exc.id, e)}
           value={exc.qt}
+          style="background-color: {isCompleted ? 'lightgrey' : ''}"
         />
       </div>
       <div id="col2">
@@ -29,6 +42,7 @@
           name="execName"
           on:input={(e) => handleChange(exc.id, e)}
           value={exc.name}
+          style="background-color: {isCompleted ? 'lightgrey' : ''}"
           required
         />
       </div>
@@ -44,21 +58,31 @@
       </div>
     </div>
     <div>
-      <textarea on:input={(e) => handleChange(exc.id, e)} name="notes"
+      <textarea
+        on:input={(e) => handleChange(exc.id, e)}
+        name="notes"
+        style="background-color: {isCompleted ? 'lightgrey' : ''}"
       ></textarea>
     </div>
     <div class="fin-btn">
-      <button class="completed" type="button">complete</button>
+      <button
+        class="completed"
+        type="button"
+        on:click={() => {
+          handleCompleted(exc.id);
+        }}>complete</button
+      >
     </div>
   </article>
 </main>
 
 <style>
-  .top-info {
-    border-bottom: 1px solid lightgray;
-  }
   header {
     padding: 0px;
+    margin: 0px;
+  }
+
+  button {
     margin: 0px;
   }
 
@@ -87,15 +111,6 @@
   label {
     text-align: left;
   }
-  h3 {
-    margin-top: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .top-info {
-    border-bottom: 1px solid lightgray;
-  }
 
   #col3 {
     padding-top: 6px;
@@ -105,9 +120,5 @@
     display: grid;
     grid-template-columns: 0.25fr 1fr 0.25fr;
     gap: 8px;
-  }
-
-  .bot {
-    margin-bottom: 20px;
   }
 </style>

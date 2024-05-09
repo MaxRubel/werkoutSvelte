@@ -4,15 +4,7 @@
   import uniqid from "uniqid";
   import { user } from "../../util/auth";
   import { onDestroy, onMount } from "svelte";
-  import {
-    createNewWorkout,
-    getSingleWorkout,
-    updateWorkout,
-  } from "../../api/workouts";
-  import { navigate } from "svelte-routing";
-  import getTime from "../../util/dateTimeString";
   import { getSingleSession, updateSession } from "../../api/sessions";
-  import { update } from "firebase/database";
   import ExCard from "../ExCard.svelte";
 
   let authUser;
@@ -27,6 +19,7 @@
   const currentUrl = window.location.href;
   const url = new URL(currentUrl);
   const param = url.pathname.split("/").pop();
+
   onMount(() => {
     getSingleSession(param).then((data) => {
       workoutName = data.name;
@@ -103,20 +96,29 @@
       <h3><i>{workoutType}</i></h3>
       <input type="date" name="date" bind:value={workoutDate} />
     </div>
-    <!-- <div class="row" style="padding: 17px">
-      <div><b>Qt.</b></div>
-      <div><b>Excercise</b></div>
-    </div> -->
+    <div class="space">
+      <button type="button" on:click={addExc}>Add +</button>
+    </div>
     {#each excercises as exc}
       <ExCard {handleChange} {handleDelete} {handleCompleted} {exc} />
     {/each}
-    <button type="submit"> Save Session </button>
+    <button type="submit" class="space"> Save Session </button>
   </form>
 </main>
 
 <style>
   .top-info {
     border-bottom: 1px solid lightgray;
+  }
+
+  .space {
+    margin: 20px 0px;
+    display: flex;
+    justify-content: center;
+  }
+
+  button {
+    margin: 0px;
   }
 
   h3 {

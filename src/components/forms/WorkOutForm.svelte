@@ -166,14 +166,16 @@
     </div>
     <h3>
       <div>Excercises:</div>
-      <button type="button" on:click={addExc}>Add +</button>
+      <button type="button" on:click={addExc} style="margin: 0px">Add +</button>
     </h3>
-    <div class="row bot">
-      <div>Qt.</div>
-      <div>Excercise</div>
-    </div>
     {#each excercises as exc}
       <article>
+        <header>
+          <div class="row">
+            <div>Qt.</div>
+            <div>Excercise</div>
+          </div>
+        </header>
         <div class="row">
           <div id="col1">
             <label for="qt"></label>
@@ -206,7 +208,10 @@
           </div>
         </div>
         <div>
-          <textarea on:input={(e) => handleChange(exc.id, e)} name="notes"
+          <textarea
+            on:input={(e) => handleChange(exc.id, e)}
+            name="notes"
+            placeholder="notes"
           ></textarea>
         </div>
       </article>
